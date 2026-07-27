@@ -84,3 +84,19 @@ However, with the need to support some public cloud platforms, we've isolated th
   - **hour**: Hour (0 to 23, UTC time) when the heartbeat alert should happen
   - **minute**: Minute of the hour (0 to 59) when the heartbeat alert should happen
   - **alert_labels**: Map of string keys and values corresponding to labels to add to the alert
+
+# Output
+
+- **rules**: An array of entries with the values **name** and **content**. The content is a string containing prometheus recording rules and alerts and **name** is its name based on tag value with some context added to it.
+
+# Note About Matching Jobs With Tags
+
+The tags for different exporters match the jobs as follow:
+- **node_exporter_jobs**: Metrics **job** label is expected to have the value `<tag>-node-exporter`
+- **blackbox_exporter_jobs**: Metrics **job** label is expected to have the value `<tag>-blackbox-exporter`
+- **kubernetes_exporter_jobs**: Metrics **cluster** label is expected to have the value `<tag>`
+- **minio_exporter_jobs**: Metrics **cluster** label is expected to have the value `<tag>`
+- **etcd_exporter_jobs**: Metrics **job** label is expected to have the value `<tag>-etcd-exporter`
+- **patroni_exporter_jobs**: Metrics **job** label is expected to have the value `<tag>-patroni-exporter`
+- **vault_exporter_jobs**: Metrics **job** label is expected to have the value `<tag>-vault-exporter`
+- **terracd_jobs**: Metrics **job** label is expected to have the value `<tag>`
