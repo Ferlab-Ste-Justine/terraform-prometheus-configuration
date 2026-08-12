@@ -109,6 +109,33 @@ variable "vault_exporter_jobs" {
   default = []
 }
 
+variable "starrocks_exporter_jobs" {
+  description = "List of starrocks exporter jobs"
+  type = list(object({
+    tag                       = string
+    fe = object({
+      count                       = number
+      heap_usage_threshold        = optional(number)
+      query_error_rate_threshold  = number
+      compaction_score_threshold  = optional(number, 100)
+      meta_log_count_threshold    = optional(number, 100000)
+      p95_query_latency_threshold = optional(number)
+      txn_publish_delay_threshold = optional(number)
+    })
+    be = object({
+      count                      = number
+      cpu_usage_threshold        = optional(number)
+      cpus_per_node              = optional(number)
+      memory_usage_threshold     = optional(number)
+      memory_per_node            = optional(number)
+      disk_space_usage_threshold = optional(number)
+      disk_io_usage_threshold    = optional(number)
+    })
+    alert_labels              = map(string)
+  }))
+  default = []
+}
+
 variable "heartbeat" {
   description = "Parameters for a heartbeat alert that triggers approximately around a given utc time each day and confirms alerting is still operational"
   type = object({

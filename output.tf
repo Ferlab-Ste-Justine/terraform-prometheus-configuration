@@ -105,6 +105,15 @@ output "rules" {
         }
       )
     }],
+    [for starrocks_exporter_job in var.starrocks_exporter_jobs: {
+      name = "${starrocks_exporter_job.tag}-starrocks-exporter"
+      content = templatefile(
+        "${path.module}/templates/starrocks-exporter.yml.tpl",
+        {
+          job = starrocks_exporter_job
+        }
+      )
+    }],
     var.heartbeat.enabled ? [{
       name = "heartbeat"
       content = templatefile(

@@ -4,7 +4,6 @@ groups:
       # ${replace(job.tag, "-", " ")} Vault unsealed nodes count
       - record: ${replace(job.tag, "-", "_")}:vault_unsealed_nodes:count
         expr: sum(vault_core_unsealed{job="${job.tag}-vault-exporter"})
-
       # Alert if any Vault node is sealed
       - alert: ${replace(title(replace(job.tag, "-", " ")), " ", "")}VaultNodeSealed
         expr: ${replace(job.tag, "-", "_")}:vault_unsealed_nodes:count < ${job.expected_unsealed_count}

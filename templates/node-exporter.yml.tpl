@@ -3,7 +3,7 @@ groups:
     rules:
       #${replace(job.tag, "-", " ")} hosts count
       - record: ${replace(job.tag, "-", "_")}:up:count
-        expr: sum by (job) (up{job="${job.tag}-node-exporter"})
+        expr: sum by (job) (up{job="${job.tag}-node-exporter"}) or (absent(up{job="${job.tag}-etcd-exporter"}) * 0)
       - alert: ${replace(title(replace(job.tag, "-", " ")), " ", "")}MachineDown
         expr: up{job="${job.tag}-node-exporter"} == 0
         for: 15m

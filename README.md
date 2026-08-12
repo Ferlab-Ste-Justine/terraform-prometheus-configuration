@@ -9,6 +9,7 @@ The following are currently supported:
 - Node Exporter
 - Patroni Exporter
 - Vault Exporter
+- Starrocks Exporter
 - Prometheus Exporter
 - Terracd Jobs (pushed metrics)
 - Minio Exporter (note: support for minio will be phased out in the future)
@@ -84,6 +85,23 @@ However, with the need to support some public cloud platforms, we've isolated th
   - **hour**: Hour (0 to 23, UTC time) when the heartbeat alert should happen
   - **minute**: Minute of the hour (0 to 59) when the heartbeat alert should happen
   - **alert_labels**: Map of string keys and values corresponding to labels to add to the alert
+- **starrocks_exporter_jobs**: List of starrocks exporter jobs to generate boilerplate for. Each entry should take the following keys:
+  - **be**: Parameters for the backend servers alerts
+    - **count**: Expected number of backend nodes
+    - **cpu_usage_threshold**: Acceptable sustained percentage (ex: 95) utilisation for the cpu. If omitted, rules and alerts for cpu usage won't be present.
+    - **cpus_per_node**: Cpu cores per backend node. If omitted, rules and alerts for cpu usage won't be present.
+    - **memory_usage_threshold**: Acceptable sustained percentage (ex: 90) utilisation for the memory. If omitted, rules and alerts for memory usage won't be present.
+    - **memory_per_node**: Memory, in bytes, per backend node. If omitted, rules and alerts for memory usage won't be present.
+    - **disk_space_usage_threshold**: Acceptable sustained percentage (ex: 90) of space utilisation for the disks. If omitted, rules and alerts for disk space usage won't be present.
+    - **disk_io_usage_threshold**: Acceptable sustained percentage (ex: 95) of io utilisation for the disks. If omitted, rules and alerts for disk io usage won't be present.
+  - **fe**: Parameters for the frontend servers alerts
+    - **count**: Expected number of frontend nodes
+    - **heap_usage_threshold**: Acceptable sustained percentage (ex: 90) of heap utilisation for the jvm. If omitted, rules and alerts for jvm heap usage won't be present.
+    - **query_error_rate_threshold**: Unacceptable number of frontend query errors per second. For a useful alert that is not noisy on an healthy cluster, a low non-zero value should be used.
+    - **compaction_score_threshold**: Threshold for the number of unmerged data versions. A value above 100 is considered high and errors will be reported at 1000. Defaults to 100.
+    - **meta_log_count_threshold**: Threshold for the number of unmerged logs to disk. Normally, starrocks triggers a checkpoint to flush once the number reaches 50 000 and values well above that are considered high. Defaults to 100 000.
+    - **p95_query_latency_threshold**: Unacceptable latency of frontend queries at the 0.95 quantile (ie, roughly the lower end of the 5% slowest query). If omitted, an alert won't be triggered for it.
+    - **txn_publish_delay_threshold**: Unacceptable observed maximum latency to publish a commited transaction (which makes it visible). If omitted, an alert won't be triggered for it.
 
 # Output
 

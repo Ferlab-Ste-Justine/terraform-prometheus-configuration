@@ -3,7 +3,7 @@ groups:
     rules:
       #${replace(job.tag, "-", " ")} etcd members count
       - record: ${replace(job.tag, "-", "_")}_etcd_members:up:count
-        expr: sum by (job) (up{job="${job.tag}-etcd-exporter"})
+        expr: sum by (job) (up{job="${job.tag}-etcd-exporter"}) or (absent(up{job="${job.tag}-etcd-exporter"}) * 0)
       - alert: ${replace(title(replace(job.tag, "-", " ")), " ", "")}EtcdMembersDown
         expr: ${replace(job.tag, "-", "_")}_etcd_members:up:count < ${job.members_count}
         for: 15m

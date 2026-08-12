@@ -3,7 +3,7 @@ groups:
     rules:
       #${replace(job.tag, "-", " ")} patroni members count
       - record: ${replace(job.tag, "-", "_")}_patroni_members:up:count
-        expr: sum by (job) (up{job="${job.tag}-patroni-exporter"})
+        expr: sum by (job) (up{job="${job.tag}-patroni-exporter"})  or (absent(up{job="${job.tag}-patroni-exporter"}) * 0)
       - alert: ${replace(title(replace(job.tag, "-", " ")), " ", "")}PatroniMembersDown
         expr: ${replace(job.tag, "-", "_")}_patroni_members:up:count < ${job.members_count}
         for: 15m
