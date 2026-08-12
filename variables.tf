@@ -53,8 +53,9 @@ variable "blackbox_exporter_jobs" {
 variable "kubernetes_exporter_jobs" {
   description = "List of kubernetes exporter jobs"
   type = list(object({
-    tag               = string
-    expected_services = list(object({
+    tag                    = string
+    volume_usage_threshold = optional(number, 85)
+    expected_services      = list(object({
       namespace            = string
       name                 = string
       expected_min_count   = number

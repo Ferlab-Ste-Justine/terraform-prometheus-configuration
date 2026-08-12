@@ -41,3 +41,31 @@ groups:
           summary: "Service ${title(replace(service.name, "-", " "))} in Kubernetes cluster ${title(replace(job.tag, "-", " "))} has too few running instances"
           description: "Expected at least *${service.expected_min_count}* instances to run. *{{ $value }}* are actually running."
 %{ endfor ~}
+  - name: ${job.tag}-kubernetes-workload-alerts
+    rules:
+      - alert: PodContainerCrashing
+        expr: rate(kube_pod_container_status_restarts_total{cluster="${job.tag}"}[5m]) * 60 > 0
+        for: 15m
+        annotations:
+          summary: "Pod Container Is Crashing"
+          description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} container {{ $labels.container }} cannot start, because it is crashing repeatedly"
+      - alert: ContainerOOMKilled
+        expr: >-
+          kube_pod_container_status_last_terminated_reason{reason="OOMKilled", cluster="${job.tag}"} == 1
+          and on (namespace, pod, container)
+          (time() - kube_pod_container_status_last_terminated_timestamp{cluster="${job.tag}"}) < 3600
+        annotations:
+          summary: "Container ran out of memory"
+          description: "Container {{ $labels.namespace }}/{{ $labels.pod }}/{{ $labels.container }} was recently OOMKilled"
+      - alert: DeploymentReplicasUnavailable
+        expr: kube_deployment_status_replicas_unavailable{cluster="${job.tag}"} > 0
+        for: 15m
+        annotations:
+          summary: "Replicas are Unavailable"
+          description: "Deployment {{ $labels.namespace }}/{{ $labels.deployment }} has {{ $value }} unavailable replicas"
+      - alert: PersistentVolumeAlmostFull
+        expr: ${replace(job.tag, "-", "_")}_kubernetes:volumes_usage:percentage > ${job.volume_usage_threshold}
+        for: 15m
+        annotations:
+          summary: "Persistent Volume Is Almost Full"
+          description: "PVC {{ $labels.namespace }}/{{ $labels.persistentvolumeclaim }} is {{ $value }}% full"
