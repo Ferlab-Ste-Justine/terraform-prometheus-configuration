@@ -54,6 +54,7 @@ However, with the need to support some public cloud platforms, we've isolated th
   - **legacy_names**: Whether to use legacy metric names from terracd version **0.14.0** or earlier.
 - **kubernetes_exporter_jobs**: List of kubernetes exporter jobs to generate boilerplate for. Each entry should take the following key:
   - **tag**: Tag for the kubernetes cluster job. It should correspond to the cluster name.
+  - **volume_usage_threshold**: Maximum PVC usage as a percentage (ex: 85) before a `PersistentVolumeAlmostFull` alert triggers. Defaults to 85.
   - **expected_services**: List of expected deployments that should have a certain number of long running instances. Each entry should have the following keys:
     - **namespace**: Namespace where the service is expected to run
     - **name**: Name of the service. It should match the k8 deployment name.
