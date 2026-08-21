@@ -44,7 +44,7 @@ groups:
   - name: ${job.tag}-kubernetes-workload-alerts
     rules:
       - alert: PodContainerCrashing
-        expr: rate(kube_pod_container_status_restarts_total{cluster="${job.tag}"}[5m]) * 60 > 0
+        expr: rate(kube_pod_container_status_restarts_total{cluster="${job.tag}"}[5m]) > 0
         for: 15m
         annotations:
           summary: "Pod Container Is Crashing"

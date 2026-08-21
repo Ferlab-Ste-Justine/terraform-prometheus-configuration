@@ -202,7 +202,7 @@ groups:
           description: "0.95 quantile query latency of instance *{{ $labels.instance }}* for starrocks job *{{ $labels.job }}* has been above the set threshold for some time. It is currently at *{{ $value }}*ms."
 %{ endif ~}
       - alert: ${replace(title(replace(job.tag, "-", " ")), " ", "")}StarrocksFeQueriesTimingOut
-        expr: rate(starrocks_fe_meta_log_count{job="${job.tag}-starrocks-exporter", group="fe"}[5m]) > 0
+        expr: rate(starrocks_fe_query_queue_timeout{job="${job.tag}-starrocks-exporter", group="fe"}[5m]) > 0
         for: 15m
 %{ if length(job.alert_labels) > 0 ~}
         labels:
