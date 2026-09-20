@@ -9,13 +9,13 @@ groups:
         expr: (time() - (max(${job.command_timestamp_metric}{job="${job.tag}", command="apply"}) by(command, job) OR on() vector(0))) / ${job.time_dividor}
       #${replace(job.tag, "-", " ")} elapsed time since last failed plan
       - record: ${replace(job.tag, "-", "_")}:failed_plan_interval:${job.unit}s
-        expr: (time() - ${job.command_timestamp_metric}{job="${job.tag}", command="plan", result="failure"}) / ${job.time_dividor}
+        expr: (time() - max_over_time(${job.command_timestamp_metric}{job="${job.tag}", command="plan", result="failure"}[2h])) / ${job.time_dividor}
       #${replace(job.tag, "-", " ")} elapsed time since last failed apply
       - record: ${replace(job.tag, "-", "_")}:failed_apply_interval:${job.unit}s
-        expr: (time() - ${job.command_timestamp_metric}{job="${job.tag}", command="apply", result="failure"}) / ${job.time_dividor}
+        expr: (time() - max_over_time(${job.command_timestamp_metric}{job="${job.tag}", command="apply", result="failure"}[2h])) / ${job.time_dividor}
       #${replace(job.tag, "-", " ")} elapsed time since last failed destroy
       - record: ${replace(job.tag, "-", "_")}:failed_destroy_interval:${job.unit}s
-        expr: (time() - ${job.command_timestamp_metric}{job="${job.tag}", command="destroy", result="failure"}) / ${job.time_dividor}
+        expr: (time() - max_over_time(${job.command_timestamp_metric}{job="${job.tag}", command="destroy", result="failure"}[2h])) / ${job.time_dividor}
       #${replace(job.tag, "-", " ")} elapsed time since last use of provider
       - record: ${replace(job.tag, "-", "_")}:provider_use_interval:${job.unit}s
         expr: (time() - terracd_provider_use_timestamp_seconds{job="${job.tag}"}) / ${job.time_dividor}
