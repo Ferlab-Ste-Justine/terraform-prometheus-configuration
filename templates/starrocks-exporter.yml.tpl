@@ -175,7 +175,7 @@ groups:
 %{ endif ~}
         annotations:
           summary: "${title(replace(job.tag, "-", " "))} Starrocks Fe Max Tablet Compaction Score Too High"
-          description: "Starrocks max table compaction score for job *{{ $labels.job }}* has reached *{{ $value }}*. Starrocks will trigger "Too many versions" errors at 1000 if compaction cannot keep up with data ingestion."
+          description: "Starrocks max table compaction score for job *{{ $labels.job }}* has reached *{{ $value }}*. Starrocks will trigger 'Too many versions' errors at 1000 if compaction cannot keep up with data ingestion."
       - alert: ${replace(title(replace(job.tag, "-", " ")), " ", "")}StarrocksFeMetaLogCountTooHigh
         expr: starrocks_fe_meta_log_count{job="${job.tag}-starrocks-exporter", group="fe"} > ${job.fe.meta_log_count_threshold}
 %{ if length(job.alert_labels) > 0 ~}
